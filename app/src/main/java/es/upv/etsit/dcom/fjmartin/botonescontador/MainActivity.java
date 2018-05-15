@@ -2,20 +2,24 @@ package es.upv.etsit.dcom.fjmartin.botonescontador;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+
     // Se declaran como propiedad de MainActivity para que
     // sea accesible dentro de rutinas
-    int valor_cuenta = 0;
+    int valor_cuenta;
 
     // Máximo valor de la cuenta
     final int MAX_CUENTA = 10;
     // Mínimo valor de la cuenta
     final int MIN_CUENTA = -3;
+
+    final String PUNTUACION = "PUNTOS";
 
     // Incrementa cuenta si no supera el máximo
     private void incrementar_cuenta() {
@@ -28,10 +32,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    // Guarda lo que interese antes de pasar a Destroy
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // salva valor_cuenta con el nombre "PUNTOS"
+        savedInstanceState.putInt(PUNTUACION, valor_cuenta);
+
+        // Llamada al método del padre, después
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState!=null) {
+            valor_cuenta = savedInstanceState.getInt(PUNTUACION);
+        }
 
         // Se declara final porque texto_cuenta ya no se modificará
         // (pueden cambiarse sus campos, pero no su referencia)
@@ -41,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         // y sus variables locales no existirán, por ello, se lleva
         // una copia
         final TextView texto_cuenta = (TextView) findViewById(R.id.contador);
+        texto_cuenta.setText("" + valor_cuenta);
+
 
         Button boton_arriba = (Button) findViewById(R.id.boton_arriba);
         Button boton_abajo = (Button) findViewById(R.id.boton_abajo);
@@ -68,4 +89,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
